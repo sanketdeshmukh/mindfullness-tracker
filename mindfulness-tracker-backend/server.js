@@ -9,7 +9,41 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mindfu
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+
+// CORS Configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost for development
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    
+    // Allow vercel frontend
+    if (origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Allow custom domains
+    if (process.env.ALLOWED_ORIGINS) {
+      const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+    }
+    
+    // Allow in development
+    if (process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    
+    callback(null, true); // Allow all for now
+  },
+  credentials: true
+};
+app.use(cors(corsOptions));
 
 // MongoDB Connection
 mongoose.connect(MONGODB_URI, {

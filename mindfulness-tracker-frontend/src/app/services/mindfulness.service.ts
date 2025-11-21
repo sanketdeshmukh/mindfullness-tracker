@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface MindfulnessEntry {
   _id?: string;
@@ -22,7 +23,7 @@ export interface DailySummary {
   providedIn: 'root'
 })
 export class MindfulnessService {
-  private apiUrl = 'http://localhost:3000/api/mindfulness';
+  private apiUrl = `${environment.apiUrl}/mindfulness`;
 
   constructor(private http: HttpClient) { }
 
