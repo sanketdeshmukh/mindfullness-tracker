@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://mindfulness-tracker-backend.onrender.com/api'
+  apiUrl: 'https://mindfullness-tracker-1.onrender.com/api'
 };
