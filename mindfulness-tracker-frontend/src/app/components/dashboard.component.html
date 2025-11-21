@@ -1,0 +1,146 @@
+<div class="dashboard-container">
+  <h1>Mindfulness Tracker Dashboard</h1>
+
+  <div class="dashboard-controls">
+    <div class="control-group">
+      <label for="dateSelect">Select Date:</label>
+      <input
+        type="date"
+        id="dateSelect"
+        [(ngModel)]="selectedDate"
+        [max]="maxDate"
+        (change)="onDateChange()"
+        class="control-input"
+      />
+    </div>
+
+    <div class="control-group">
+      <label for="rangeSelect">Select Range:</label>
+      <select
+        id="rangeSelect"
+        [(ngModel)]="selectedRange"
+        (change)="onRangeChange()"
+        class="control-select"
+      >
+        <option value="today">Today</option>
+        <option value="7days">Last 7 Days</option>
+        <option value="30days">Last 30 Days</option>
+        <option value="3months">Last 3 Months</option>
+        <option value="6months">Last 6 Months</option>
+        <option value="1year">Last 1 Year</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">
+    Loading data...
+  </div>
+
+  <!-- Progress Over Time Chart - Moved to top for mobile -->
+  <div class="chart-container" *ngIf="!isLoading && (chartType === 'hourly' ? hourlyData.length > 0 : dailyData.length > 0)">
+    <div class="chart-box">
+      <h3>{{ chartType === 'hourly' ? 'Hourly Progress - Today' : 'Progress Over Time - ' + selectedRange }}</h3>
+      <svg class="line-chart" [attr.viewBox]="'0 0 1000 400'" preserveAspectRatio="xMidYMid meet">
+        <!-- Grid lines -->
+        <line x1="80" y1="50" x2="80" y2="320" stroke="#ddd" stroke-width="2" />
+        <line x1="80" y1="320" x2="950" y2="320" stroke="#ddd" stroke-width="2" />
+        
+        <!-- Y-axis labels (0, 25, 50, 75, 100) -->
+        <text x="20" y="325" font-size="12" fill="#666">0%</text>
+        <text x="15" y="248" font-size="12" fill="#666">25%</text>
+        <text x="15" y="170" font-size="12" fill="#666">50%</text>
+        <text x="15" y="93" font-size="12" fill="#666">75%</text>
+        <text x="10" y="55" font-size="12" fill="#666">100%</text>
+        
+        <!-- Horizontal grid lines -->
+        <line x1="80" y1="243" x2="950" y2="243" stroke="#f0f0f0" stroke-width="1" />
+        <line x1="80" y1="166" x2="950" y2="166" stroke="#f0f0f0" stroke-width="1" />
+        <line x1="80" y1="89" x2="950" y2="89" stroke="#f0f0f0" stroke-width="1" />
+        
+        <!-- Line path -->
+        <polyline 
+          [attr.points]="getChartPoints()" 
+          fill="none" 
+          stroke="#1976d2" 
+          stroke-width="3" 
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        
+        <!-- Data points -->
+        <circle 
+          *ngFor="let point of getChartPointsArray()"
+          [attr.cx]="point.x" 
+          [attr.cy]="point.y" 
+          r="5" 
+          fill="#1976d2"
+          style="cursor: pointer; transition: r 0.2s ease;"
+          (mouseenter)="hoveredPoint = point"
+          (mouseleave)="hoveredPoint = null"
+        />
+        
+        <!-- Tooltip -->
+        <g *ngIf="hoveredPoint">
+          <rect 
+            [attr.x]="hoveredPoint.x - 45" 
+            [attr.y]="hoveredPoint.y - 50" 
+            width="90" 
+            height="40" 
+            fill="#333" 
+            rx="4"
+            opacity="0.9"
+          />
+          <text 
+            [attr.x]="hoveredPoint.x" 
+            [attr.y]="hoveredPoint.y - 28" 
+            font-size="13" 
+            fill="white"
+            text-anchor="middle"
+            font-weight="bold"
+          >
+            {{ hoveredPoint.percentage }}%
+          </text>
+          <text 
+            [attr.x]="hoveredPoint.x" 
+            [attr.y]="hoveredPoint.y - 12" 
+            font-size="11" 
+            fill="#ccc"
+            text-anchor="middle"
+          >
+            {{ hoveredPoint.date }}
+          </text>
+        </g>
+        
+        <!-- Date labels (x-axis) -->
+        <text 
+          *ngFor="let label of getChartLabels(); let i = index"
+          [attr.x]="label.x" 
+          [attr.y]="350" 
+          font-size="11" 
+          fill="#666"
+          text-anchor="middle"
+        >
+          {{ label.text }}
+        </text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-container" *ngIf="!isLoading">
+    <div class="stat-box">
+      <h3>Today's Average</h3>
+      <div class="stat-value">{{ todayAverage }}%</div>
+    </div>
+
+    <div class="stat-box">
+      <h3>Period Average</h3>
+      <div class="stat-value">{{ weekAverage }}%</div>
+    </div>
+
+    <div class="stat-box">
+      <h3>Entries Today</h3>
+      <div class="stat-value">{{ entryCountToday }}</div>
+    </div>
+  </div>
+</div>

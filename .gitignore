@@ -1,0 +1,37 @@
+# Angular
+node_modules/
+dist/
+.angular/
+*.tar.gz
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# Build
+build/
+out/
+
+# Dependencies
+package-lock.json
+yarn.lock
+
+# Misc
+.cache/
+temp/

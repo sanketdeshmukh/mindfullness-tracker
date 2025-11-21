@@ -1,0 +1,97 @@
+<div class="form-container">
+  <h2>Log Your Mindfulness</h2>
+  
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input
+        type="date"
+        id="date"
+        formControlName="date"
+        [max]="maxDate"
+        class="form-control"
+      />
+      <div class="error-message" *ngIf="submitted && f['date'].errors">
+        Date is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="hour">Hour of Day</label>
+      <select
+        id="hour"
+        formControlName="hour"
+        class="form-control"
+      >
+        <option value="">-- Select Hour --</option>
+        <option *ngFor="let hour of hours" [value]="hour">
+          {{ hour < 10 ? '0' + hour : hour }}:00
+        </option>
+      </select>
+      <div class="error-message" *ngIf="submitted && f['hour'].errors">
+        Hour is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="presentPercentage">
+        Present Percentage (%)
+        <span class="current-value" *ngIf="f['presentPercentage'].value">
+          {{ f['presentPercentage'].value }}%
+        </span>
+      </label>
+      <input
+        type="range"
+        id="presentPercentage"
+        formControlName="presentPercentage"
+        min="0"
+        max="100"
+        step="5"
+        class="form-range"
+      />
+      <input
+        type="number"
+        formControlName="presentPercentage"
+        min="0"
+        max="100"
+        class="form-control"
+        placeholder="Or enter directly"
+      />
+      <div class="error-message" *ngIf="submitted && f['presentPercentage'].errors">
+        <span *ngIf="f['presentPercentage'].errors['required']">
+          Percentage is required
+        </span>
+        <span *ngIf="f['presentPercentage'].errors['min'] || f['presentPercentage'].errors['max']">
+          Percentage must be between 0 and 100
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="notes">Notes (Optional)</label>
+      <textarea
+        id="notes"
+        formControlName="notes"
+        class="form-control"
+        rows="3"
+        placeholder="Any observations or notes..."
+      ></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="isLoading"
+    >
+      {{ isLoading ? 'Saving...' : 'Save Entry' }}
+    </button>
+  </form>
+
+  <div class="success-message" *ngIf="successMessage">
+    ✓ {{ successMessage }}
+  </div>
+
+  <div class="error-message-box" *ngIf="errorMessage">
+    ✗ {{ errorMessage }}
+  </div>
+</div>
