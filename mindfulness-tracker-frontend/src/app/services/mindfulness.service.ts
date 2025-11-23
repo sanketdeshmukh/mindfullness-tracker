@@ -23,7 +23,7 @@ export interface DailySummary {
   providedIn: 'root'
 })
 export class MindfulnessService {
-  private apiUrl = `${environment.apiUrl}/mindfulness`;
+  private apiUrl = `${environment.apiUrl}/api/mindfulness`;
 
   constructor(private http: HttpClient) { }
 
