@@ -87,6 +87,6 @@ export class MindfulnessService {
 
   // Check backend health
   checkHealth(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/health`);
+    return this.http.get(`${environment.apiUrl}api/health`);
   }
 }
